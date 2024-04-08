@@ -76,3 +76,28 @@ X_var
 结果张量（1，2）位置的元素被替换为9
 
 - 部分元素赋值
+
+# 内存使用
+TensorFlow没有提供一种明确的方式来**原地**运行单个操作，所以，y=y+x，等号左右两边y的地址不同。->会导致额外的内存开销
+解决方法：
+- assign
+``` py
+Z = tf.Variable(tf.zeros_like(Y))
+print('id(Z):', id(Z))
+Z.assign(X + Y)
+print('id(Z):', id(Z))
+
+```
+z的地址没有发生改变
+- @tf.function
+
+# ndarray和tensor相互转化
+- ndarray->tensor
+``` py
+b=tf.constant(x) #x是数组
+```
+- tensor->ndarray
+``` py
+a=tf.constant([1,2]).numpy()
+```
+
