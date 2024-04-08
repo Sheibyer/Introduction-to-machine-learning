@@ -63,4 +63,16 @@ b=tf.reshape(y,(1,2))
 a+b
 ```
 结果张量的形状为（3，2）
+
 # 索引和切片
+等同于python数组的索引和切片，目的是获取张量的部分张量元素
+**注意：Tensors是不可变的，也不可被赋值**     Variables可以被赋值    **TensorFlow中的梯度不会通过Variables反向传播**
+- 单个元素赋值
+``` py
+X_var = tf.Variable(X)
+X_var[1, 2].assign(9)
+X_var
+```
+结果张量（1，2）位置的元素被替换为9
+
+- 部分元素赋值
