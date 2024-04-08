@@ -33,6 +33,20 @@ A*B
 描述具有任意数量轴的n维数组
 
 # 降维
-
+- 求和降维，沿某一条轴求和，结果中该轴消失
+``` py
+tf.reduce_sum(A,axis=0)    #按列求和，结果为1*n
+tf.reduce_sum(A,axis=0)    #按行求和，结果为n*1
+tf.reduce_sum(A,axis=[0,1])    #按行和列求和，结果为1*1，等同于tf.reduce_sum(A)
+```
+- 平均值
+``` py
+tf.reduce_mean(A)
+tf.reduce_sum(A) / tf.size(A).numpy()
+```
+# 非降维求和
+``` py
+x=tf.reduce_sum(A,axis=1,keepdims=True) #结果保持两个维度
+```
 
 
