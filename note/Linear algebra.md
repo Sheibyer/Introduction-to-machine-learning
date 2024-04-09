@@ -79,7 +79,7 @@ example：
 tf.norm(u)
 ```
 - L1范数：元素按绝对值求和
-- ![图片]()
+- ![图片](https://github.com/Sheibyer/Introduction-to-machine-learning/blob/fc7d98b6dca86f94f244c6e4cc1977f26a849d9c/picture/L1%E8%8C%83%E5%BC%8F.PNG)
 ``` py
 tf.reduce_sum(tf.abs(u))
 ```
