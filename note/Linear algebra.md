@@ -83,5 +83,6 @@ tf.norm(u)
 ``` py
 tf.reduce_sum(tf.abs(u))
 ```
-- Lp范数
+- Lp范式
+![图片](https://github.com/Sheibyer/Introduction-to-machine-learning/blob/7ed9d4ae4f854a3a085580f68c5515e9f95ac906/picture/LP%E8%8C%83%E5%BC%8F.PNG)
 - 矩阵的Frobenius范数
