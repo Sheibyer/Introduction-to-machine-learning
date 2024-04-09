@@ -73,7 +73,8 @@ tf.matmul(A,B)    #按照线性代数矩阵相乘的规则计算
 将向量映射到标量的函数
 example：
 - L2范数：元素平方和的平凡根
-![图片](https://github.com/Sheibyer/Introduction-to-machine-learning/blob/16c604aa2fbe775f62544e721dda1f4e29196d33/picture/L2%E8%8C%83%E5%BC%8F.PNG)
+![图片](https://github.com/Sheibyer/Introduction-to-machine-learning/blob/16c604aa2fbe775f62544e721dda1f4e29196d33/picture/L2%E8%8C%83%E5%BC%8F.PNG "L2范式")
+通常L2范式的下标不写，||x||==||x||2
 ``` py
 tf.norm(u)
 ```
