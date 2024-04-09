@@ -36,7 +36,7 @@ A*B
 - 求和降维，沿某一条轴求和，结果中该轴消失
 ``` py
 tf.reduce_sum(A,axis=0)    #按列求和，结果为1*n
-tf.reduce_sum(A,axis=0)    #按行求和，结果为n*1
+tf.reduce_sum(A,axis=1)    #按行求和，结果为n*1
 tf.reduce_sum(A,axis=[0,1])    #按行和列求和，结果为1*1，等同于tf.reduce_sum(A)
 ```
 - 平均值
@@ -46,7 +46,41 @@ tf.reduce_sum(A) / tf.size(A).numpy()
 ```
 # 非降维求和
 ``` py
-x=tf.reduce_sum(A,axis=1,keepdims=True) #结果保持两个维度
+x=tf.reduce_sum(A,axis=1,keepdims=True) #结果保持原来的维度
 ```
 
+# 点积
+相同位置的按元素乘积的和
+类似于先x*y，在reduce_sum
+最总结果是一个元素
+``` py
+y = tf.ones(4, dtype=tf.float32)
+x, y, tf.tensordot(x, y, axes=1)    #等同于tf.reduce_sum(x*y)
+```
+个人理解：假如x，y是4*1，x和y的点积是先x转置，变为1*4，然后x和y按照矩阵乘法相乘，结果为1*1。
 
+# 矩阵-向量积
+``` py
+tf.linalg.matvec(A,x)    #shape:A:[5,4],x:[4] res[5,]
+```
+
+# 矩阵-矩阵乘法
+``` py
+tf.matmul(A,B)    #按照线性代数矩阵相乘的规则计算
+```
+
+# 范数
+将向量映射到标量的函数
+example：
+- L2范数：元素平方和的平凡根
+![图片]()
+``` py
+tf.norm(u)
+```
+- L1范数：元素按绝对值求和
+- ![图片]()
+``` py
+tf.reduce_sum(tf.abs(u))
+```
+- Lp范数
+- 矩阵的Frobenius范数
