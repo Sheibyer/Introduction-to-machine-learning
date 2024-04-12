@@ -1,4 +1,7 @@
 # 自动微分
+> 各部分链接
+> 1. [课后题](#课后题)
+> 2. [Backward使用误区](Backward只能对标量求导)
 - 只适用于tf.Variable 或 tf.compat.v1.get_variable （相对于tf.constant）并设置为Trainable的变量可进行自动求导。
 - 标量函数关于向量x的梯度是向量，且与x具有相同的形状
 - 反向传播：填充关于每个参数的偏导数
@@ -11,11 +14,13 @@ with tf.GradientTape() as t:
 x_grad = t.gradient(y, x)  #反向传播函数自动计算y关于x每个分量的梯度
 x_grad
 ```
+## Backward只能对标量求导
+仔细学习一下
 
-# 非标量变量的反向传播
+## 非标量变量的反向传播
 向量对向量的导数是矩阵
 
-# 分离计算
+## 分离计算
 - 对于**复合**函数，eg：z=f(y),y=f(x),计算z对于x的梯度时，有时我们想把中间量y看作常数，并且只考虑到x在被y计算后发挥的作用  ——>定义新变量u，使其与y由相同的值，但不会自动反向传播。
 ``` py
 # 设置persistent=True来运行t.gradient多次
@@ -27,3 +32,58 @@ with tf.GradientTape(persistent=True) as t:
 x_grad = t.gradient(z, x)
 x_grad == u    #ans为<tf.Tensor: shape=(4,), dtype=bool, numpy=array([ True,  True,  True,  True])>，说明z = u * x中u是常数
 ``` 
+
+### 课后题
+
+#### 1. 为什么计算二阶导数比一阶导数的开销要更大？
+通俗讲：多求一次导数，带来很多其他额外开销，例如内存、梯度等。
+
+#### 2. 在运行反向传播函数之后，立即再次运行它，看看会发生什么。
+报错，GPTT给的解释：因为深度学习框架在进行反向传播时，会更新计算图的状态，包括梯度值、计算历史等。再次运行反向传播函数可能会导致计算图的状态不一致，从而产生错误。
+
+自己跑的
+
+Trying to backward through the graph a second time (or directly access saved tensors after they have already been freed). Saved intermediate values of the graph are freed when you call .backward() or autograd.grad(). Specify retain_graph=True if you need to backward through the graph a second time or if you need to access saved tensors after calling backward.
+
+尝试第二次向后遍历图(或者在已释放的张量之后直接访问已保存的张量)。当您调用.backward()或autograd.grad()时，将释放图中保存的中间值。如果需要第二次向后遍历图，或者在调用backward后需要访问保存的张量，则指定retain_graph=True。
+
+#### 3. 在控制流的例子中，我们计算d关于a的导数，如果将变量a更改为随机向量或矩阵，会发生什么？
+可以跑，有结果
+``` py
+#a = torch.randn(size=(), requires_grad=True)
+#d = f(a)
+#d.backward()
+
+a = torch.randn(size=(3,1), requires_grad=True)
+print(a.shape)
+print(a)
+d = f(a)
+a.grad == d / a                    $~~~~~~~~~~~~~~~~~~$但这个结果是False，和教材不一样，就算是原码也是false，评论区有反应这个问题的
+```
+
+#### 4. 重新设计一个求控制流梯度的例子，运行并分析结果。
+> 使用自动微分的一个好处是： 即使构建函数的计算图需要通过Python控制流（例如，条件、循环或任意函数调用），我们仍然可以计算得到的变量的梯度。 在下面的代码中，while循环的迭代次数和if语句的结果都取决于输入a的值。
+> 两个注意点
+> 1. 不论最后结果是什么形状，求backward只能是标量，所以一般用sum等方法降维，具体见[反向传播-降维](https://zh.d2l.ai/chapter_preliminaries/autograd.html "反向传播-降维")
+``` py
+import torch
+
+def forward(x, y):
+    if x.sum() > 0:
+        output = x * y
+    else:
+        output = x + y
+    return output
+
+x = torch.tensor([1.0, -2.0, 3.0], requires_grad=True)
+y = torch.tensor([0.5, 1.0, -0.5], requires_grad=True)
+
+output = forward(x, y)
+loss = output.sum()
+
+loss.backward()
+
+print("Input x gradient:", x.grad)                    #Input x gradient: tensor([ 0.5000,  1.0000, -0.5000])
+print("Input y gradient:", y.grad)                    #Input y gradient: tensor([ 1., -2.,  3.])
+```
+
