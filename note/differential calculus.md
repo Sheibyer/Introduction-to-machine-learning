@@ -65,6 +65,7 @@ a.grad == d / a                    $~~~~~~~~~~~~~~~~~~$但这个结果是False�
 > 使用自动微分的一个好处是： 即使构建函数的计算图需要通过Python控制流（例如，条件、循环或任意函数调用），我们仍然可以计算得到的变量的梯度。 在下面的代码中，while循环的迭代次数和if语句的结果都取决于输入a的值。
 > 两个注意点
 > 1. 不论最后结果是什么形状，求backward只能是标量，所以一般用sum等方法降维，具体见[反向传播-降维](https://zh.d2l.ai/chapter_preliminaries/autograd.html "反向传播-降维")
+> 2. tensor要requires_grad=True才能自动微分
 ``` py
 import torch
 
@@ -87,3 +88,12 @@ print("Input x gradient:", x.grad)                    #Input x gradient: tensor(
 print("Input y gradient:", y.grad)                    #Input y gradient: tensor([ 1., -2.,  3.])
 ```
 
+#### 5. 由于公式不好敲，暂略
+> 本体考察通过自动微分求导数，有注意事项，见上题[注意事项](重新设计一个求控制流梯度的例子，运行并分析结果。)
+核心代码：
+``` py
+x = np.linspace(-3np.pi, 3np.pi, 100)
+x1= torch.tensor(x, requires_grad=True)
+y1= torch.sin(x1)
+y1.sum().backward()                    
+```
